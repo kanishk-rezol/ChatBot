@@ -11,7 +11,7 @@ app.add_middleware(
 )
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="", 
+    api_key="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", 
 )
 @app.post("/chat")
 async def chat(req: Request):
