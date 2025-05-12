@@ -19,37 +19,50 @@ const Chatbot: React.FC = () => {
     localStorage.setItem('chatHistory', JSON.stringify(newChat));
 
     try {
+      const updatedChat = [...newChat, { role: 'user', content: input }];
       const response = await axios.post('http://localhost:8000/chat', {
-        message: input,
+        chatHistory: updatedChat,
+        
       });
-
       const botMessage = {
         role: 'assistant' as const,
         content: response.data.reply || 'No response from bot',
       };
-      const updatedChat = [...newChat, botMessage];
-      setChat(updatedChat);
-      localStorage.setItem('chatHistory', JSON.stringify(updatedChat));
+      const finalchat = [...newChat, botMessage];
+      setChat(finalchat);
+      localStorage.setItem('chatHistory', JSON.stringify(finalchat));
+      const storedChat = localStorage.getItem('chatHistory');
+      if (storedChat) { 
+      console.log('Updated chatHistory:', JSON.parse(storedChat));
+      } else {
+      console.log('No chatHistory found in localStorage')
+  } 
     } catch (error) {
       const errorMsg = { role: 'assistant' as const, content: 'Error contacting the bot.' };
-      const updatedChat = [...newChat, errorMsg];
-      setChat(updatedChat);
-      localStorage.setItem('chatHistory', JSON.stringify(updatedChat));
+      const finalchat = [...newChat, errorMsg];
+      setChat(finalchat);
+      localStorage.setItem('chatHistory', JSON.stringify(finalchat));
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-t from-gray-900 via-black to-black text-white flex flex-col items-center p-6">
+    <div className="min-h-screen bg-[#212121] text-white flex flex-col items-center p-6 overflow-auto">
+      <div className='bg-black h-full w-full left-0 max-w-56 top-0 rounded-xl fixed'></div>
       <h2 className="fixed text-2xl bg-transparent max-w-full w-full ml-10 font-bold mb-4 top-4">Chatbot</h2>
 
-      <div className="w-full max-w-3xl flex flex-col space-y-2 bg-transparent mt-20 p-4 rounded-lg overflow-y-auto h-[70vh]">
+      <div 
+      className="w-full max-w-4xl flex flex-col space-y-2 bg-transparent ml-64 overflow-y-auto mt-10 p-4 rounded-lg h-[80vh]"
+      style={{
+      scrollbarWidth: 'none', /* Firefox */
+      msOverflowStyle: 'none', /* IE/Edge */
+      }}>
         {chat.map((line, idx) => (
           <div
             key={idx}
             className={`p-2 rounded text-sm max-w-[70%] ${
               line.role === 'user'
-                ? 'bg-blue-600 self-end text-right'
-                : 'bg-gray-700 self-start text-left'
+                ? 'bg-[#303030] shadow-sm rounded-xl self-end text-right'
+                : 'bg-transparent self-start text-left'
             }`}
           >
             {line.content}
