@@ -14,7 +14,7 @@ app.add_middleware(
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key=""
+    api_key="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"
 )
 class Message(BaseModel):
     role: Literal["user", "assistant"]
